@@ -1,0 +1,22 @@
+{
+  "name": "todo-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "tsx watch src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@prisma/client": "^6.6.0",
+    "fastify": "^5.3.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}
