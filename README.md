@@ -85,7 +85,7 @@ O projeto segue uma **Clean Architecture modularizada**, baseada nos seguintes p
 - **TypeScript**
 - **Fastify** (HTTP framework ultra rápido)
 - **Prisma ORM** (Banco de dados)
-- **SQLite** ou outro banco de sua escolha
+- **PostGreSQL**
 - **Clean Architecture Principles**
 
 ---
