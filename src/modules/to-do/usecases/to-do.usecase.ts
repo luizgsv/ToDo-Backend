@@ -31,7 +31,7 @@ export class ToDoUseCase {
     const toDo = await this.toDoRepository.findById(id);
 
     if (!toDo) {
-      throw new AppError('ToDo not found!', 404)
+      throw new AppError("ToDo not found!", 404);
     }
 
     // Atualiza campos permitidos
@@ -51,5 +51,19 @@ export class ToDoUseCase {
     const updated = await this.toDoRepository.update(toDo);
 
     return updated;
+  }
+
+  async deleteToDo(id: string) {
+    if (!id) {
+      throw new AppError("Id is required", 400);
+    }
+
+    const toDo = await this.toDoRepository.findById(id);
+
+    if (!toDo) {
+      throw new AppError("ToDo not found!", 404);
+    }
+
+    await this.toDoRepository.delete(id);
   }
 }

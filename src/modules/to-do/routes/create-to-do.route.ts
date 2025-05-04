@@ -10,7 +10,7 @@ export async function createToDoRoute(app: FastifyInstance) {
   const repository = new ToDoRepositoryPrisma();
   const useCase = new ToDoUseCase(repository);
 
-  app.post<{ Body: CreateToDoDTO }>("/to-do", async (request, reply) => {
+  app.post<{ Body: CreateToDoDTO }>("/", async (request, reply) => {
     try {
       const { title, description, completed } = request.body;
 

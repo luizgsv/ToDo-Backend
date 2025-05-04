@@ -43,4 +43,20 @@ export class ToDoRepositoryPrisma implements IToDoRepository {
 
     return new ToDo(found);
   }
+
+  async delete(id: string): Promise<void | null> {
+    const found = await prisma.toDo.findUnique({
+      where: { id },
+    });
+
+    if (!found) {
+      return null;
+    }
+
+    await prisma.toDo.delete({
+      where: {
+        id: found?.id,
+      },
+    });
+  }
 }

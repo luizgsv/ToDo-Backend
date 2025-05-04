@@ -9,7 +9,7 @@ export async function updateToDoRoute(app: FastifyInstance) {
   const useCase = new ToDoUseCase(repository);
 
   app.put<{ Body: UpdateToDoDTO; Params: { id: string } }>(
-    "/to-do/:id",
+    ":id",
     async (request, reply) => {
       try {
         const { id } = request.params;
