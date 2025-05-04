@@ -4,78 +4,46 @@ Este projeto é uma API de gerenciamento de tarefas (_To-Do_) usando **Fastify**
 
 ---
 
-## 📦 Estrutura de Pastas
+## 📦 Estrutura de Pastas (resumo)
 
 ```bash
 src/
-└── modules/
-    └── to-do/
-        ├── dtos/
-        │   ├── create-to-do.dto.ts
-        │   ├── update-to-do.dto.ts
-        ├── entities/
-        │   └── to-do.entity.ts
-        ├── repositories/
-        │   ├── prisma/
-        │   │   └── to-do.repository.prisma.ts
-        │   └── interfaces/
-        │       └── i-to-do-repository.ts
-        ├── routes/
-        │   ├── create-to-do.route.ts
-        │   ├── update-to-do.route.ts
-        │   └── index.ts
-        └── usecases/
-            └── to-do.usecase.ts
-└── shared/
-    └── errors/
-        └── app-error.ts
-server.ts
+├── modules/
+│   └── to-do/
+│       ├── dtos/
+│       ├── entities/
+│       ├── repositories/
+│       ├── routes/
+│       └── usecases/
+├── shared/
+│   ├── errors/
+│   └── lib/
+└── server.ts
 ```
-
----
-
-## 🧠 Explicação de Cada Pasta/Arquivo
-
-| Pasta/Arquivo                            | Descrição                                                                                                      |
-| :--------------------------------------- | :------------------------------------------------------------------------------------------------------------- |
-| `modules/to-do/dtos/`                    | Define os formatos de entrada e saída (Data Transfer Objects - DTOs) para criar e atualizar ToDos.             |
-| `modules/to-do/entities/`                | Define a entidade de domínio (`ToDo`), com comportamentos e regras internas (ex: `markAsCompleted`, `update`). |
-| `modules/to-do/repositories/interfaces/` | Define a interface do repositório, padronizando como iremos interagir com os dados.                            |
-| `modules/to-do/repositories/prisma/`     | Implementação concreta usando o Prisma para manipular o banco de dados.                                        |
-| `modules/to-do/routes/`                  | Define rotas HTTP separadas para cada ação (criar, atualizar, etc).                                            |
-| `modules/to-do/usecases/`                | Contém a lógica de caso de uso (ex: criar, atualizar tarefas) isolada da camada HTTP e da camada de banco.     |
-| `shared/errors/`                         | Padroniza o tratamento de erros customizados com a classe `AppError`.                                          |
-| `server.ts`                              | Arquivo de inicialização do Fastify e registro das rotas.                                                      |
-| `shared/lib/prisma-client.ts`            | Instancia o cliente prisma, responsável por se conectar ao banco                                               |
 
 ---
 
 ## 🧹 Clean Architecture Aplicada
 
-O projeto segue uma **Clean Architecture modularizada**, baseada nos seguintes princípios:
+O projeto adota os princípios da **Clean Architecture**, priorizando organização, testabilidade e independência entre as camadas:
 
-- **Separação de responsabilidades**: Cada camada sabe apenas o necessário sobre as outras.
-- **Independência de frameworks**: Fastify e Prisma estão isolados em camadas específicas.
-- **Testabilidade**: Cada parte pode ser testada separadamente (ex: testar um UseCase sem precisar do Prisma).
-- **Inversão de dependência**: UseCases dependem apenas de **interfaces** dos repositórios, e não de implementações concretas.
+### 🧱 Camadas principais
 
-🎯 O estilo aplicado aqui é o **"Modular Monolith + Clean Architecture"**:
+- **Entidades**: Regras e comportamentos de domínio.
+- **UseCases**: Lógica de aplicação, orquestrando as regras do negócio.
+- **Repositórios (interfaces)**: Contratos de acesso a dados.
+- **Repositórios (implementações)**: Uso de Prisma para persistência.
+- **Rotas**: Camada HTTP usando Fastify.
 
-- Modular por feature (ex: `to-do` está separado).
-- Clean isolando entidades, casos de uso e interfaces.
+### 🔄 Inversão de dependência
 
----
+As camadas de regra de negócio não conhecem nada sobre infraestrutura como Prisma ou Fastify — apenas interfaces.
 
-## ✨ Boas Práticas Implementadas
+### ✅ Benefícios
 
-- **DTOs** para validar a entrada e evitar dependência entre camadas.
-- **Entities** ricas com comportamentos (não só dados).
-- **UseCases** focados apenas em orquestrar regras de negócio.
-- **Repositórios** com interface para permitir futuras trocas de ORM se necessário.
-- **Tratamento de erros global** usando a classe `AppError`.
-- **Rotas separadas** por operação (create, update...), com handlers pequenos e fáceis de manter.
-- **Prefixo `/api`** para versionamento futuro.
-- **Função `bootstrap()`** para iniciar a aplicação de forma organizada e escalável.
+- Testes mais simples e independentes
+- Facilita manutenção e evolução do projeto
+- Troca de tecnologias sem impacto no domínio
 
 ---
 
@@ -83,39 +51,76 @@ O projeto segue uma **Clean Architecture modularizada**, baseada nos seguintes p
 
 - **Node.js**
 - **TypeScript**
-- **Fastify** (HTTP framework ultra rápido)
-- **Prisma ORM** (Banco de dados)
-- **PostGreSQL**
-- **Clean Architecture Principles**
-
----
-
-## 📚 Possíveis Melhorias Futuras
-
-- Criar Controllers para isolar a lógica HTTP ainda mais.
-- Adicionar validações automáticas (ex: usando `zod`).
-- Implementar testes unitários e de integração.
-- Melhorar tratamento global de exceções.
-- Criar módulos para autenticação, usuários, etc.
+- **Fastify**
+- **Prisma ORM**
+- **PostgreSQL**
+- **Docker + Docker Compose**
 
 ---
 
 ## 🛠️ Como Rodar
 
-```bash
-# Instalar dependências
-npm install
+### 🔧 Com Docker
 
-# Rodar a aplicação
-npm run dev
+1. Crie um arquivo `.env` com as variáveis de ambiente:
+
+```env
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_database
 ```
 
-A API estará disponível em: [http://localhost:3000/api/to-do](http://localhost:3000/api/to-do)
+2. Execute o projeto com:
+
+```bash
+docker-compose up
+```
+
+A aplicação estará disponível em: [http://localhost:3000/api/to-do](http://localhost:3000/api/to-do)
+
+### 🧪 docker-compose.yml
+
+```yaml
+version: "3.8"
+
+services:
+  app:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: pnpm install && pnpm dev
+    ports:
+      - "3000:3000"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    depends_on:
+      - db
+
+  db:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+```
 
 ---
 
-# 📜 Conclusão
+## 📚 Melhorias Futuras
 
-Esse projeto é uma base sólida para qualquer aplicação Node.js que queira aplicar boas práticas de **arquitetura limpa**, mesmo sem complicações desnecessárias.
+- Adicionar autenticação de usuários
+- Implementar testes automatizados
+- Separar Controllers para melhorar organização da camada HTTP
+- Centralizar e melhorar tratamento de erros
+- Adicionar validações com `zod` (opcional no futuro)
 
-Com essa estrutura, escalar para novos módulos ou mudar tecnologias no futuro fica muito mais fácil! 🚀
+---
+
+## 📜 Conclusão
+
+Este projeto serve como uma base sólida, seguindo a Clean Architecture para aplicações Node.js modernas. É modular, testável, flexível e preparado para crescer com organização e facilidade.
